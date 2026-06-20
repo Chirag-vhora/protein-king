@@ -1,0 +1,115 @@
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import Navbar from '../components/common/Navbar.jsx';
+import Footer from '../components/common/Footer.jsx';
+import StorefrontPage from '../features/home/pages/StorefrontPage.jsx';
+import ProductDetailsPage from '../features/products/pages/ProductDetailsPage.jsx';
+import CartPage from '../features/cart/pages/CartPage.jsx';
+import SuccessPage from '../features/checkout/pages/SuccessPage.jsx';
+import LoginPage from '../features/auth/pages/LoginPage.jsx';
+import AdminDashboard from '../features/admin/pages/AdminDashboard.jsx';
+import { getProducts } from '../services/api.js';
+
+function AppContent() {
+  const [cart, setCart] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('auraUser') || 'null'));
+
+  const location = useLocation();
+  const isAdminPath = location.pathname.startsWith('/admin');
+
+  const loginUser = (username) => {
+    localStorage.setItem('auraUser', JSON.stringify(username));
+    setUser(username);
+  };
+
+  const logoutUser = () => {
+    localStorage.removeItem('auraUser');
+    setUser(null);
+  };
+
+  // Load products from DB
+  const fetchProducts = async () => {
+    try {
+      const data = await getProducts();
+      setProducts(data);
+      setLoading(false);
+    } catch (err) {
+      console.error('Error fetching products:', err);
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  // Cart operations
+  const addToCart = (product, quantity, flavor) => {
+    setCart(prevCart => {
+      const existing = prevCart.find(item => item.product._id === product._id && item.flavor === flavor);
+      if (existing) {
+        return prevCart.map(item => 
+          (item.product._id === product._id && item.flavor === flavor)
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      }
+      return [...prevCart, { product, quantity, flavor }];
+    });
+  };
+
+  const removeFromCart = (productId, flavor) => {
+    setCart(prevCart => prevCart.filter(item => !(item.product._id === productId && item.flavor === flavor)));
+  };
+
+  const updateQuantity = (productId, flavor, delta) => {
+    setCart(prevCart => prevCart.map(item => {
+      if (item.product._id === productId && item.flavor === flavor) {
+        const newQty = item.quantity + delta;
+        return { ...item, quantity: newQty > 0 ? newQty : 1 };
+      }
+      return item;
+    }));
+  };
+
+  const clearCart = () => setCart([]);
+
+  const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
+
+  return (
+    <div className="min-h-screen relative font-sans bg-surface-dim text-on-surface">
+      {/* Background Mesh */}
+      <div className="mesh-gradient"></div>
+
+      {/* Global Navigation */}
+      {!isAdminPath && (
+        <Navbar cartCount={cartCount} user={user} logoutUser={logoutUser} />
+      )}
+
+      {/* Routes */}
+      <div className={isAdminPath ? "" : "pt-20"}>
+        <Routes>
+          <Route path="/" element={<StorefrontPage products={products} loading={loading} addToCart={addToCart} />} />
+          <Route path="/product/:id" element={<ProductDetailsPage products={products} addToCart={addToCart} />} />
+          <Route path="/cart" element={<CartPage cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} clearCart={clearCart} user={user} />} />
+          <Route path="/login" element={<LoginPage loginUser={loginUser} />} />
+          <Route path="/success" element={<SuccessPage />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+        </Routes>
+      </div>
+
+      {/* Global Footer */}
+      {!isAdminPath && <Footer />}
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Router>
+      <AppContent />
+    </Router>
+  );
+}

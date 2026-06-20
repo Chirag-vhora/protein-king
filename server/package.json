@@ -2,11 +2,11 @@
   "name": "aura-performance-server",
   "version": "1.0.0",
   "description": "Backend API for AURA PERFORMANCE",
-  "main": "server.js",
+  "main": "src/server.js",
   "type": "module",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
     "seed": "node seed.js"
   },
   "dependencies": {
