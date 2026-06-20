@@ -1,0 +1,16 @@
+{
+  "name": "aura-performance-root",
+  "version": "1.0.0",
+  "description": "Root orchestration for AURA PERFORMANCE MERN application",
+  "scripts": {
+    "install:all": "npm install && npm install --prefix server && npm install --prefix client && npm install --prefix admin",
+    "seed": "npm run seed --prefix server",
+    "server": "npm run dev --prefix server",
+    "client": "npm run dev --prefix client",
+    "admin": "npm run dev --prefix admin",
+    "dev": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix admin\" \"npm run dev --prefix server\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
