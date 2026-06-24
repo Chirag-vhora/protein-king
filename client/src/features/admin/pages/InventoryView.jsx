@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import InventoryStats from '../components/InventoryStats.jsx';
 import ProductTable from '../components/ProductTable.jsx';
 import ProductModal from '../components/ProductModal.jsx';
@@ -33,32 +33,28 @@ export default function InventoryView({ products, refreshData }) {
   };
 
   const handleSubmit = async (formData) => {
-    if (!formData.name || !formData.sku || !formData.imageUrl || formData.price <= 0) {
+    const images = [formData.image1, formData.image2, formData.image3]
+      .map(image => image.trim())
+      .filter(Boolean);
+
+    if (!formData.name.trim() || !formData.description.trim() || images.length === 0 || Number(formData.price) <= 0) {
       setFormError('Please fill all required inputs.');
       return;
     }
 
     const payload = {
-      name: formData.name,
-      sku: formData.sku,
-      description: formData.description,
-      price: parseFloat(formData.price),
-      quantity: parseInt(formData.quantity),
+      name: formData.name.trim(),
+      description: formData.description.trim(),
+      price: Number(formData.price),
+      quantity: Number.parseInt(formData.quantity, 10) || 0,
       category: formData.category,
-      imageUrl: formData.imageUrl,
-      servings: formData.servings,
-      tags: [formData.category === 'WHEY' ? 'Pure Isolate' : formData.category === 'PRE-WORKOUT' ? 'Focus Max' : 'Pure Strength'],
-      flavors: formData.flavors.split(',').map(f => f.trim()).filter(Boolean),
-      nutrition: {
-        protein: formData.protein,
-        carbs: formData.carbs,
-        fat: formData.fat,
-        calories: formData.calories,
-        leucine: formData.category === 'WHEY' ? '3.2G' : '0G',
-        bcaa: formData.category === 'WHEY' ? '6.8G' : '0G',
-        glutamine: formData.category === 'WHEY' ? '5.1G' : '0G'
-      }
+      images,
+      flavors: formData.flavors.split(',').map(f => f.trim()).filter(Boolean)
     };
+
+    if (formData.sku.trim()) {
+      payload.sku = formData.sku.trim();
+    }
 
     try {
       if (editingProduct) {
@@ -103,7 +99,8 @@ export default function InventoryView({ products, refreshData }) {
       />
 
       {/* Product Modal CRUD */}
-      <ProductModal 
+      <ProductModal
+        key={modalOpen ? editingProduct?._id || 'new-product' : 'closed-product-modal'}
         isOpen={modalOpen} 
         onClose={() => setModalOpen(false)} 
         onSubmit={handleSubmit} 

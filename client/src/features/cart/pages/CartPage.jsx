@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createOrder } from '../../../services/api.js';
 
@@ -6,12 +6,10 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    name: user || '',
-    email: user ? `${user.toLowerCase().replace(/\s+/g, '')}@aura.tech` : '',
+    name: (typeof user === 'object' && user) ? (user.name || '') : (user || ''),
+    email: (typeof user === 'object' && user) ? (user.email || '') : (user ? `${user.toLowerCase().replace(/\s+/g, '')}@aura.tech` : ''),
+    phone: '',
     address: '',
-    cardNumber: '',
-    expiry: '',
-    cvc: ''
   });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -31,8 +29,8 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
   const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
     if (cart.length === 0) return;
-    if (!formData.name || !formData.email || !formData.address) {
-      setError('Please fill in shipping information.');
+    if (!formData.name.trim() || !formData.email.trim() || !formData.phone.trim() || !formData.address.trim()) {
+      setError('Please fill in your name, email, phone number, and shipping address.');
       return;
     }
 
@@ -40,9 +38,10 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
     setError('');
 
     const orderPayload = {
-      customerName: formData.name,
-      customerEmail: formData.email,
-      shippingAddress: formData.address,
+      customerName: formData.name.trim(),
+      customerEmail: formData.email.trim(),
+      customerPhone: formData.phone.trim(),
+      shippingAddress: formData.address.trim(),
       items: cart.map(item => ({
         product: item.product._id,
         quantity: item.quantity,
@@ -51,7 +50,9 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
       subtotal,
       shipping,
       tax,
-      totalAmount
+      totalAmount,
+      paymentMethod: 'Manual',
+      paymentStatus: 'Pending'
     };
 
     try {
@@ -95,7 +96,7 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
             {cart.map((item, idx) => (
               <div key={`${item.product._id}-${item.flavor}-${idx}`} className="glass-card p-6 flex flex-col sm:flex-row gap-6 items-center">
                 <div className="w-24 h-24 bg-surface-container-highest overflow-hidden rounded flex-shrink-0 flex items-center justify-center p-2">
-                  <img className="max-w-full max-h-full object-contain grayscale" src={item.product.imageUrl} alt={item.product.name} />
+                  <img className="max-w-full max-h-full object-contain grayscale" src={item.product.images?.[0]} alt={item.product.name} />
                 </div>
                 
                 <div className="flex-1 w-full">
@@ -165,6 +166,18 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
                     required
                   />
                 </div>
+                <div className="flex flex-col">
+                  <label className="font-display text-[9px] font-bold text-outline mb-1">PHONE NUMBER</label>
+                  <input 
+                    className="glass-input font-sans text-sm text-primary py-2 px-0 placeholder:text-on-tertiary-container/40"
+                    placeholder="+1 555 010 2048" 
+                    type="tel" 
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
               </div>
               <div className="flex flex-col">
                 <label className="font-display text-[9px] font-bold text-outline mb-1">SHIPPING ADDRESS</label>
@@ -180,48 +193,14 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
               </div>
 
               <div className="pt-6 border-t border-white/10">
-                <h2 className="font-display font-bold text-lg text-primary mb-6">PAYMENT GATEWAY (DEMO)</h2>
-                <div className="space-y-6">
-                  <div className="flex flex-col">
-                    <label className="font-display text-[9px] font-bold text-outline mb-1">CARD NUMBER</label>
-                    <div className="flex items-center gap-2 border-b border-white/20 focus-within:border-white transition-colors">
-                      <input 
-                        className="bg-transparent border-none flex-1 font-sans text-sm text-primary py-2 px-0 placeholder:text-on-tertiary-container/40 focus:ring-0"
-                        placeholder="4111 2222 3333 4444" 
-                        type="text" 
-                        name="cardNumber"
-                        value={formData.cardNumber}
-                        onChange={handleInputChange}
-                        required
-                      />
-                      <span className="material-symbols-outlined text-outline">lock</span>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-6">
-                    <div className="flex flex-col">
-                      <label className="font-display text-[9px] font-bold text-outline mb-1">EXPIRY DATE</label>
-                      <input 
-                        className="glass-input font-sans text-sm text-primary py-2 px-0 placeholder:text-on-tertiary-container/40"
-                        placeholder="MM/YY" 
-                        type="text" 
-                        name="expiry"
-                        value={formData.expiry}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label className="font-display text-[9px] font-bold text-outline mb-1">CVC</label>
-                      <input 
-                        className="glass-input font-sans text-sm text-primary py-2 px-0 placeholder:text-on-tertiary-container/40"
-                        placeholder="123" 
-                        type="password" 
-                        name="cvc"
-                        value={formData.cvc}
-                        onChange={handleInputChange}
-                        required
-                      />
-                    </div>
+                <h2 className="font-display font-bold text-lg text-primary mb-4">MANUAL ORDER CONFIRMATION</h2>
+                <div className="flex items-start gap-4 p-5 border border-white/10 bg-white/[0.02] rounded-sm">
+                  <span className="material-symbols-outlined text-primary mt-0.5">support_agent</span>
+                  <div>
+                    <p className="font-display text-xs font-bold text-primary tracking-wide">NO ONLINE PAYMENT IS REQUIRED</p>
+                    <p className="font-sans text-sm text-on-surface-variant mt-2 leading-relaxed">
+                      Submit your order request and our team will contact you personally to confirm the order and arrange payment.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -270,9 +249,9 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
                 disabled={submitting}
                 className="w-full bg-primary text-black py-4 font-display font-bold text-xs tracking-widest transition-all hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] active:scale-[0.98]"
               >
-                {submitting ? 'PROCESSING PROTOCOL...' : 'COMPLETE PURCHASE'}
+                {submitting ? 'SUBMITTING REQUEST...' : 'PLACE ORDER REQUEST'}
               </button>
-              <p className="font-display text-[9px] text-outline text-center mt-4">BY CLICKING, YOU AGREE TO OUR PERFORMANCE PROTOCOLS.</p>
+              <p className="font-display text-[9px] text-outline text-center mt-4">YOUR ORDER WILL REMAIN PENDING UNTIL PERSONALLY CONFIRMED.</p>
             </div>
 
             <div className="flex items-center justify-center gap-2 opacity-50">

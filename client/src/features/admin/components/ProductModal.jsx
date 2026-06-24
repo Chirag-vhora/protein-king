@@ -1,57 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
+
+const getInitialFormData = (product) => ({
+  name: product?.name || '',
+  sku: product?.sku || '',
+  description: product?.description || '',
+  price: product?.price ?? 0,
+  quantity: product?.quantity ?? 0,
+  category: product?.category || 'WHEY',
+  image1: product?.images?.[0] || '',
+  image2: product?.images?.[1] || '',
+  image3: product?.images?.[2] || '',
+  flavors: product?.flavors?.length ? product.flavors.join(', ') : 'Chocolate, Vanilla'
+});
 
 export default function ProductModal({ isOpen, onClose, onSubmit, editingProduct, formError }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    sku: '',
-    description: '',
-    price: 0,
-    quantity: 0,
-    category: 'WHEY',
-    imageUrl: '',
-    servings: '30 Servings',
-    protein: '',
-    carbs: '',
-    fat: '',
-    calories: '',
-    flavors: 'Chocolate, Vanilla'
-  });
-
-  useEffect(() => {
-    if (editingProduct) {
-      setFormData({
-        name: editingProduct.name,
-        sku: editingProduct.sku,
-        description: editingProduct.description,
-        price: editingProduct.price,
-        quantity: editingProduct.quantity,
-        category: editingProduct.category,
-        imageUrl: editingProduct.imageUrl,
-        servings: editingProduct.servings || '30 Servings',
-        protein: editingProduct.nutrition?.protein || '',
-        carbs: editingProduct.nutrition?.carbs || '',
-        fat: editingProduct.nutrition?.fat || '',
-        calories: editingProduct.nutrition?.calories || '',
-        flavors: editingProduct.flavors ? editingProduct.flavors.join(', ') : 'Chocolate, Vanilla'
-      });
-    } else {
-      setFormData({
-        name: '',
-        sku: '',
-        description: '',
-        price: 0,
-        quantity: 0,
-        category: 'WHEY',
-        imageUrl: '',
-        servings: '30 Servings',
-        protein: '0G',
-        carbs: '0G',
-        fat: '0G',
-        calories: '0 KCAL',
-        flavors: 'Chocolate, Vanilla'
-      });
-    }
-  }, [editingProduct, isOpen]);
+  const [formData, setFormData] = useState(() => getInitialFormData(editingProduct));
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -94,7 +57,7 @@ export default function ProductModal({ isOpen, onClose, onSubmit, editingProduct
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-1">
               <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">Product Designation (Name) *</label>
-              <input 
+              <input
                 className="w-full bg-transparent border-none border-b border-white/20 focus:border-white focus:ring-0 text-white py-2 transition-all outline-none text-sm"
                 placeholder="e.g., ISO-WHEY ELITE" 
                 type="text"
@@ -107,7 +70,7 @@ export default function ProductModal({ isOpen, onClose, onSubmit, editingProduct
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-1">
-                <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">System SKU *</label>
+                <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">System SKU</label>
                 <input 
                   className="w-full bg-transparent border-none border-b border-white/20 focus:border-white focus:ring-0 text-white py-2 transition-all outline-none text-sm"
                   placeholder="AURA-X-000" 
@@ -115,7 +78,6 @@ export default function ProductModal({ isOpen, onClose, onSubmit, editingProduct
                   name="sku"
                   value={formData.sku}
                   onChange={handleInputChange}
-                  required
                 />
               </div>
               <div className="space-y-1">
@@ -161,87 +123,44 @@ export default function ProductModal({ isOpen, onClose, onSubmit, editingProduct
               </div>
             </div>
 
-            <div className="space-y-1">
-              <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">Product Image URL *</label>
-              <input 
-                className="w-full bg-transparent border-none border-b border-white/20 focus:border-white focus:ring-0 text-white py-2 transition-all outline-none text-sm"
-                placeholder="https://..." 
-                type="text"
-                name="imageUrl"
-                value={formData.imageUrl}
-                onChange={handleInputChange}
-                required
-              />
+            <div className="space-y-3">
+              <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">Product Image URLs *</label>
+              {[1, 2, 3].map(imageNumber => (
+                <input
+                  key={imageNumber}
+                  className="w-full bg-transparent border-none border-b border-white/20 focus:border-white focus:ring-0 text-white py-2 transition-all outline-none text-sm"
+                  placeholder={`Image ${imageNumber} — https://...`}
+                  type="url"
+                  name={`image${imageNumber}`}
+                  value={formData[`image${imageNumber}`]}
+                  onChange={handleInputChange}
+                  required={imageNumber === 1}
+                />
+              ))}
             </div>
 
             <div className="space-y-1">
-              <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">Description</label>
+              <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">Description *</label>
               <textarea 
                 className="w-full bg-transparent border border-white/20 focus:border-white focus:ring-0 text-white p-2 transition-all outline-none text-sm h-16"
                 placeholder="Elite formulation details..." 
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
+                required
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-1">
-                <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">Servings Size</label>
-                <input 
-                  className="w-full bg-transparent border-none border-b border-white/20 focus:border-white focus:ring-0 text-white py-2 transition-all outline-none text-sm"
-                  placeholder="e.g. 30 Servings" 
-                  type="text"
-                  name="servings"
-                  value={formData.servings}
-                  onChange={handleInputChange}
-                />
-              </div>
-              <div className="space-y-1">
-                <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">Flavors (comma separated)</label>
-                <input 
-                  className="w-full bg-transparent border-none border-b border-white/20 focus:border-white focus:ring-0 text-white py-2 transition-all outline-none text-sm"
-                  placeholder="Chocolate, Vanilla" 
-                  type="text"
-                  name="flavors"
-                  value={formData.flavors}
-                  onChange={handleInputChange}
-                />
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-white/5">
-              <span className="text-[9px] font-bold text-white/40 uppercase tracking-widest block mb-2">Nutritional Values (Optional)</span>
-              <div className="grid grid-cols-4 gap-2">
-                <input 
-                  className="bg-transparent border-none border-b border-white/20 focus:border-white focus:ring-0 text-white text-center py-1 text-xs" 
-                  placeholder="Prot (28G)" 
-                  name="protein"
-                  value={formData.protein}
-                  onChange={handleInputChange}
-                />
-                <input 
-                  className="bg-transparent border-none border-b border-white/20 focus:border-white focus:ring-0 text-white text-center py-1 text-xs" 
-                  placeholder="Carbs (1G)" 
-                  name="carbs"
-                  value={formData.carbs}
-                  onChange={handleInputChange}
-                />
-                <input 
-                  className="bg-transparent border-none border-b border-white/20 focus:border-white focus:ring-0 text-white text-center py-1 text-xs" 
-                  placeholder="Fat (0.5G)" 
-                  name="fat"
-                  value={formData.fat}
-                  onChange={handleInputChange}
-                />
-                <input 
-                  className="bg-transparent border-none border-b border-white/20 focus:border-white focus:ring-0 text-white text-center py-1 text-xs" 
-                  placeholder="Cal (120 KCAL)" 
-                  name="calories"
-                  value={formData.calories}
-                  onChange={handleInputChange}
-                />
-              </div>
+            <div className="space-y-1">
+              <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">Flavors (comma separated)</label>
+              <input
+                className="w-full bg-transparent border-none border-b border-white/20 focus:border-white focus:ring-0 text-white py-2 transition-all outline-none text-sm"
+                placeholder="Chocolate, Vanilla"
+                type="text"
+                name="flavors"
+                value={formData.flavors}
+                onChange={handleInputChange}
+              />
             </div>
 
             <div className="flex flex-col gap-4 mt-6">

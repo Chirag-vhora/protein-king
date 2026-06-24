@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function Navbar({ cartCount, user, logoutUser }) {
@@ -35,7 +34,7 @@ export default function Navbar({ cartCount, user, logoutUser }) {
           {user ? (
             <div className="flex items-center gap-3">
               <span className="font-display font-semibold text-[10px] tracking-wider text-primary border border-white/20 px-2 py-1 rounded bg-white/5 uppercase">
-                {user}
+                {user.name}
               </span>
               <button 
                 onClick={logoutUser} 

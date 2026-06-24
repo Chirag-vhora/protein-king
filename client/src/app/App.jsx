@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from '../components/common/Navbar.jsx';
 import Footer from '../components/common/Footer.jsx';
@@ -7,25 +7,35 @@ import ProductDetailsPage from '../features/products/pages/ProductDetailsPage.js
 import CartPage from '../features/cart/pages/CartPage.jsx';
 import SuccessPage from '../features/checkout/pages/SuccessPage.jsx';
 import LoginPage from '../features/auth/pages/LoginPage.jsx';
+import RegisterPage from '../features/auth/pages/RegisterPage.jsx';
 import AdminDashboard from '../features/admin/pages/AdminDashboard.jsx';
-import { getProducts } from '../services/api.js';
+import { getProducts, getCurrentUser } from '../services/api.js';
 
 function AppContent() {
   const [cart, setCart] = useState([]);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('auraUser') || 'null'));
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('auraUser');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
 
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith('/admin');
 
-  const loginUser = (username) => {
-    localStorage.setItem('auraUser', JSON.stringify(username));
-    setUser(username);
+  const loginUser = (userData, token) => {
+    localStorage.setItem('auraUser', JSON.stringify(userData));
+    localStorage.setItem('auraToken', token);
+    setUser(userData);
   };
 
   const logoutUser = () => {
     localStorage.removeItem('auraUser');
+    localStorage.removeItem('auraToken');
     setUser(null);
   };
 
@@ -42,7 +52,24 @@ function AppContent() {
   };
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProducts();
+
+    // Verify session if token exists
+    const token = localStorage.getItem('auraToken');
+    if (token) {
+      getCurrentUser(token)
+        .then(data => {
+          localStorage.setItem('auraUser', JSON.stringify(data.user));
+          setUser(data.user);
+        })
+        .catch(err => {
+          console.error('Session verification failed:', err);
+          localStorage.removeItem('auraUser');
+          localStorage.removeItem('auraToken');
+          setUser(null);
+        });
+    }
   }, []);
 
   // Cart operations
@@ -95,6 +122,7 @@ function AppContent() {
           <Route path="/product/:id" element={<ProductDetailsPage products={products} addToCart={addToCart} />} />
           <Route path="/cart" element={<CartPage cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} clearCart={clearCart} user={user} />} />
           <Route path="/login" element={<LoginPage loginUser={loginUser} />} />
+          <Route path="/register" element={<RegisterPage loginUser={loginUser} />} />
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>

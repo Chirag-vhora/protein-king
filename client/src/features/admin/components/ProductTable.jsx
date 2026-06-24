@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function ProductTable({ products, onEdit, onDelete }) {
   return (
     <section className="glass-panel overflow-hidden">
@@ -22,7 +20,11 @@ export default function ProductTable({ products, onEdit, onDelete }) {
               <tr key={prod._id} className="hover:bg-white/5 transition-colors group">
                 <td className="px-6 py-4 flex items-center gap-4">
                   <div className="w-10 h-10 glass-panel flex items-center justify-center overflow-hidden border-white/10 rounded flex-shrink-0 p-1">
-                    <img className="max-w-full max-h-full object-contain" src={prod.imageUrl} alt={prod.name} />
+                    {prod.images?.[0] ? (
+                      <img className="max-w-full max-h-full object-contain" src={prod.images[0]} alt={prod.name} />
+                    ) : (
+                      <span className="material-symbols-outlined text-white/30 text-lg">image</span>
+                    )}
                   </div>
                   <span className="font-bold text-white text-xs">{prod.name}</span>
                 </td>

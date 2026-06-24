@@ -1,4 +1,18 @@
-import React from 'react';
+const ORDER_STATUSES = ['Pending', 'Confirmed', 'Shipped', 'Delivered', 'Cancelled'];
+
+const formatShippingAddress = (address) => {
+  if (!address) return 'No shipping address';
+  if (typeof address === 'string') return address;
+
+  return Object.values(address)
+    .filter(value => typeof value === 'string' && value.trim())
+    .join(', ') || 'No shipping address';
+};
+
+const getProductName = (item) => {
+  if (item.product && typeof item.product === 'object') return item.product.name || 'Unknown Product';
+  return item.productName || item.name || 'Unknown Product';
+};
 
 export default function OrdersTable({ orders, onStatusChange }) {
   return (
@@ -16,7 +30,7 @@ export default function OrdersTable({ orders, onStatusChange }) {
                 <th className="px-6 py-4 font-display text-[9px] font-bold tracking-widest text-on-secondary-container uppercase">Order ID</th>
                 <th className="px-6 py-4 font-display text-[9px] font-bold tracking-widest text-on-secondary-container uppercase">Customer Info</th>
                 <th className="px-6 py-4 font-display text-[9px] font-bold tracking-widest text-on-secondary-container uppercase">Items Ordered</th>
-                <th className="px-6 py-4 font-display text-[9px] font-bold tracking-widest text-on-secondary-container uppercase">Total Amount</th>
+                <th className="px-6 py-4 font-display text-[9px] font-bold tracking-widest text-on-secondary-container uppercase">Payment</th>
                 <th className="px-6 py-4 font-display text-[9px] font-bold tracking-widest text-on-secondary-container uppercase text-right">Status Flag</th>
               </tr>
             </thead>
@@ -29,22 +43,29 @@ export default function OrdersTable({ orders, onStatusChange }) {
                   <td className="px-6 py-4">
                     <div className="font-bold text-white text-xs">{order.customerName}</div>
                     <div className="text-[10px] text-on-surface-variant font-sans mt-0.5">{order.customerEmail}</div>
-                    <div className="text-[9px] text-outline font-sans mt-1 w-48 truncate" title={order.shippingAddress}>
-                      {order.shippingAddress}
+                    <div className="text-[10px] text-on-surface-variant font-sans mt-0.5">{order.customerPhone || 'No phone provided'}</div>
+                    <div className="text-[9px] text-outline font-sans mt-1 w-48 truncate" title={formatShippingAddress(order.shippingAddress)}>
+                      {formatShippingAddress(order.shippingAddress)}
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="space-y-1">
-                      {order.items.map((item, idx) => (
+                      {(order.items || []).map((item, idx) => (
                         <div key={idx} className="text-xs text-white/90">
-                          {item.product ? item.product.name : 'Unknown Product'} 
-                          <span className="text-outline text-[10px] ml-1">x{item.quantity} ({item.flavor})</span>
+                          {getProductName(item)}
+                          <span className="text-outline text-[10px] ml-1">
+                            x{item.quantity}{item.flavor ? ` (${item.flavor})` : ''}
+                          </span>
                         </div>
                       ))}
                     </div>
                   </td>
-                  <td className="px-6 py-4 font-display text-xs text-white font-bold">
-                    ${order.totalAmount.toFixed(2)}
+                  <td className="px-6 py-4">
+                    <div className="font-display text-xs text-white font-bold">
+                      ${Number(order.totalAmount || 0).toFixed(2)}
+                    </div>
+                    <div className="text-[10px] text-on-surface-variant mt-1">{order.paymentMethod || 'Method unavailable'}</div>
+                    <div className="text-[9px] text-outline mt-0.5 uppercase">{order.paymentStatus || 'Status unavailable'}</div>
                   </td>
                   <td className="px-6 py-4 text-right">
                     <select
@@ -55,12 +76,14 @@ export default function OrdersTable({ orders, onStatusChange }) {
                           ? 'text-green-400 border-green-500/30' 
                           : order.orderStatus === 'Shipped' 
                           ? 'text-yellow-400 border-yellow-500/30' 
+                          : order.orderStatus === 'Cancelled'
+                          ? 'text-red-400 border-red-500/30'
                           : 'text-primary'
                       }`}
                     >
-                      <option value="Pending">Pending</option>
-                      <option value="Shipped">Shipped</option>
-                      <option value="Delivered">Delivered</option>
+                      {ORDER_STATUSES.map(status => (
+                        <option key={status} value={status}>{status}</option>
+                      ))}
                     </select>
                   </td>
                 </tr>

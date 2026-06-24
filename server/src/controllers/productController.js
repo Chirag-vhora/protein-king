@@ -23,12 +23,25 @@ export const getProduct = async (req, res, next) => {
 
 export const addProduct = async (req, res, next) => {
   try {
-    const { name, sku, description, price, quantity, category, imageUrl, tags, servings, nutrition, flavors } = req.body;
-    
-    // Validate SKU uniqueness
-    const existing = await productService.findProductBySku(sku);
-    if (existing) {
-      return res.status(400).json({ message: 'Product with this SKU already exists' });
+    // console.log(req.body);
+
+    const {
+      name,
+      sku,
+      description,
+      price,
+      quantity,
+      category,
+      images,
+      flavors
+    } = req.body;
+
+    // Only validate SKU uniqueness if SKU is actually provided
+    if (sku) {
+      const existing = await productService.findProductBySku(sku);
+      if (existing) {
+        return res.status(400).json({ message: 'Product with this SKU already exists' });
+      }
     }
 
     const newProduct = await productService.createProduct({
@@ -38,11 +51,8 @@ export const addProduct = async (req, res, next) => {
       price,
       quantity,
       category,
-      imageUrl,
-      tags: tags || [],
-      servings,
-      nutrition: nutrition || {},
-      flavors: flavors || ['Unflavored']
+      images: images || [],
+      flavors: flavors || []
     });
 
     res.status(201).json(newProduct);
