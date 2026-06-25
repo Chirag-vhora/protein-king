@@ -30,7 +30,7 @@ export default function ProductModal({ isOpen, onClose, onSubmit, editingProduct
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-md" onClick={onClose}></div>
-      <div className="relative glass-modal w-full max-w-lg mx-4 p-8 overflow-y-auto max-h-[90vh]">
+      <div className="relative glass-modal w-full max-w-lg mx-4 p-6 sm:p-8 overflow-y-auto max-h-[90vh]">
         <div className="absolute -top-24 -right-24 w-64 h-64 bg-white/5 rounded-full blur-[100px]"></div>
         
         <div className="relative z-10">
@@ -68,7 +68,7 @@ export default function ProductModal({ isOpen, onClose, onSubmit, editingProduct
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">System SKU</label>
                 <input 
@@ -95,7 +95,7 @@ export default function ProductModal({ isOpen, onClose, onSubmit, editingProduct
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">Initial Stock *</label>
                 <input 

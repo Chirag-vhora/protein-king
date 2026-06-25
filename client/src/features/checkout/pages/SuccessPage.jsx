@@ -1,9 +1,8 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 export default function SuccessPage() {
   return (
-    <div className="text-center py-40 max-w-[1280px] mx-auto px-4">
+    <div className="text-center py-20 md:py-40 max-w-[1280px] mx-auto px-4">
       <div className="flex justify-center mb-6">
         <span className="material-symbols-outlined text-primary text-6xl" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
       </div>

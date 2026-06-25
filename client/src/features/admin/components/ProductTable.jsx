@@ -5,7 +5,7 @@ export default function ProductTable({ products, onEdit, onDelete }) {
         <h3 className="font-display font-semibold text-lg text-white">Product Catalog</h3>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full min-w-[600px] text-left border-collapse">
           <thead>
             <tr className="border-b border-white/10">
               <th className="px-6 py-4 font-display text-[9px] font-bold tracking-widest text-on-secondary-container uppercase">Product Name</th>
@@ -44,7 +44,7 @@ export default function ProductTable({ products, onEdit, onDelete }) {
                   </div>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <div className="flex justify-end gap-2 md:opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex justify-end gap-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                     <button 
                       onClick={() => onEdit(prod)}
                       className="p-2 hover:text-white transition-colors text-on-surface-variant"

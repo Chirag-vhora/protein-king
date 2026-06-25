@@ -1,17 +1,30 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Sidebar({ activeTab, setActiveTab, logoutAdmin }) {
+export default function Sidebar({ activeTab, setActiveTab, logoutAdmin, isOpen, onClose }) {
   return (
-    <aside className="fixed left-0 h-full w-64 bg-surface-container-lowest/90 backdrop-blur-2xl border-r border-white/5 shadow-2xl flex flex-col p-6 z-40">
+    <>
+      {/* Mobile Sidebar Backdrop Overlay */}
+      {isOpen && (
+        <div 
+          onClick={onClose} 
+          className="fixed inset-0 z-30 bg-black/60 backdrop-blur-sm lg:hidden"
+        ></div>
+      )}
+
+      <aside className={`fixed left-0 top-0 bottom-0 h-full w-64 bg-surface-container-lowest/90 backdrop-blur-2xl border-r border-white/5 shadow-2xl flex flex-col p-6 z-40 transition-transform duration-300 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
+      }`}>
       <div className="mb-12">
         <h1 className="font-display font-bold text-xl text-primary tracking-tighter mb-1">ADMIN PORTAL</h1>
         <p className="font-display text-[9px] font-bold text-on-tertiary-container tracking-widest opacity-60">SYSTEM COMMAND</p>
       </div>
 
-      <nav className="flex-grow space-y-2">
+       <nav className="flex-grow space-y-2">
         <button 
-          onClick={() => setActiveTab('inventory')}
+          onClick={() => {
+            setActiveTab('inventory');
+            if (onClose) onClose();
+          }}
           className={`w-full flex items-center gap-4 px-4 py-3 font-display font-semibold text-xs tracking-wider transition-all duration-300 ${
             activeTab === 'inventory' 
               ? 'bg-white/10 text-primary border-r-2 border-primary' 
@@ -23,7 +36,10 @@ export default function Sidebar({ activeTab, setActiveTab, logoutAdmin }) {
         </button>
 
         <button 
-          onClick={() => setActiveTab('orders')}
+          onClick={() => {
+            setActiveTab('orders');
+            if (onClose) onClose();
+          }}
           className={`w-full flex items-center gap-4 px-4 py-3 font-display font-semibold text-xs tracking-wider transition-all duration-300 ${
             activeTab === 'orders' 
               ? 'bg-white/10 text-primary border-r-2 border-primary' 
@@ -54,5 +70,6 @@ export default function Sidebar({ activeTab, setActiveTab, logoutAdmin }) {
         </div>
       </div>
     </aside>
+    </>
   );
 }

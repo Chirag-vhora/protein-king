@@ -24,7 +24,7 @@ export default function OrdersTable({ orders, onStatusChange }) {
         {orders.length === 0 ? (
           <div className="text-center py-20 text-on-surface-variant">No orders placed in ledger yet.</div>
         ) : (
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[800px] text-left border-collapse">
             <thead>
               <tr className="border-b border-white/10">
                 <th className="px-6 py-4 font-display text-[9px] font-bold tracking-widest text-on-secondary-container uppercase">Order ID</th>
@@ -41,8 +41,8 @@ export default function OrdersTable({ orders, onStatusChange }) {
                     {order._id}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="font-bold text-white text-xs">{order.customerName}</div>
-                    <div className="text-[10px] text-on-surface-variant font-sans mt-0.5">{order.customerEmail}</div>
+                    <div className="font-bold text-white text-xs break-words">{order.customerName}</div>
+                    <div className="text-[10px] text-on-surface-variant font-sans mt-0.5 break-all">{order.customerEmail}</div>
                     <div className="text-[10px] text-on-surface-variant font-sans mt-0.5">{order.customerPhone || 'No phone provided'}</div>
                     <div className="text-[9px] text-outline font-sans mt-1 w-48 truncate" title={formatShippingAddress(order.shippingAddress)}>
                       {formatShippingAddress(order.shippingAddress)}

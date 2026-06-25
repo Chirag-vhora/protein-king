@@ -72,9 +72,9 @@ export default function InventoryView({ products, refreshData }) {
   return (
     <div>
       {/* Header */}
-      <header className="flex flex-col md:flex-row md:justify-between md:items-end mb-12 gap-4">
+      <header className="flex flex-col md:flex-row md:justify-between md:items-end mb-6 md:mb-12 gap-4">
         <div>
-          <h2 className="font-display font-bold text-3xl text-white mb-2">Inventory Management</h2>
+          <h2 className="font-display font-bold text-2xl md:text-3xl text-white mb-2">Inventory Management</h2>
           <p className="font-sans text-xs text-on-surface-variant max-w-xl">
             Monitor and adjust your premium supplement stocks. Real-time engineering metrics for high-end performance supply chains.
           </p>

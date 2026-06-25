@@ -137,7 +137,7 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
           </div>
 
           {/* Form details */}
-          <div className="glass-card p-8">
+          <div className="glass-card p-4 sm:p-8">
             <h2 className="font-display font-bold text-lg text-primary mb-6">SHIPPING DETAILS</h2>
             
             <form onSubmit={handleCheckoutSubmit} className="space-y-6">
@@ -211,7 +211,7 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
 
         {/* Right Column: Order Summary sticky */}
         <aside className="lg:col-span-4 lg:sticky lg:top-32 w-full">
-          <div className="glass-card p-8 flex flex-col gap-6">
+          <div className="glass-card p-4 sm:p-8 flex flex-col gap-6">
             <h2 className="font-display font-bold text-xs text-primary border-b border-white/10 pb-4 tracking-wider">ORDER SUMMARY</h2>
             
             <div className="space-y-4 text-sm">

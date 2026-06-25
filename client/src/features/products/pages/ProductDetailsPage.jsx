@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 export default function ProductDetailsPage({ products, addToCart }) {
@@ -11,6 +11,7 @@ export default function ProductDetailsPage({ products, addToCart }) {
 
   useEffect(() => {
     if (product && product.flavors && product.flavors.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSelectedFlavor(product.flavors[0]);
     }
   }, [product]);
@@ -34,7 +35,7 @@ export default function ProductDetailsPage({ products, addToCart }) {
         
         {/* Left: Product Images */}
         <div className="md:col-span-6 lg:col-span-7 flex flex-col gap-6">
-          <div className="glass-card rounded-xl overflow-hidden aspect-[4/5] flex items-center justify-center p-12 group">
+          <div className="glass-card rounded-xl overflow-hidden aspect-[4/5] flex items-center justify-center p-6 md:p-12 group">
             <img 
               className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" 
               src={product.imageUrl} 
@@ -75,7 +76,7 @@ export default function ProductDetailsPage({ products, addToCart }) {
           {product.flavors && product.flavors.length > 0 && (
             <div className="space-y-4">
               <label className="font-display font-semibold text-xs text-on-surface-variant uppercase tracking-widest">Select Flavor</label>
-              <div className="flex gap-4">
+              <div className="flex flex-wrap gap-2 md:gap-4">
                 {product.flavors.map(flav => (
                   <button 
                     key={flav}

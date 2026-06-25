@@ -1,4 +1,3 @@
-import React from 'react';
 import OrdersTable from '../components/OrdersTable.jsx';
 import { updateOrderStatus } from '../../../services/api.js';
 
@@ -15,8 +14,8 @@ export default function OrdersView({ orders, refreshData }) {
 
   return (
     <div>
-      <header className="mb-12">
-        <h2 className="font-display font-bold text-3xl text-white mb-2">Fulfillment Portal</h2>
+      <header className="mb-6 md:mb-12">
+        <h2 className="font-display font-bold text-2xl md:text-3xl text-white mb-2">Fulfillment Portal</h2>
         <p className="font-sans text-xs text-on-surface-variant max-w-xl">
           Audit customer orders, monitor payment verifications, and route shipping status flags.
         </p>

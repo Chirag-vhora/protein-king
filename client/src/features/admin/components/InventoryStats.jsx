@@ -1,4 +1,4 @@
-import React from 'react';
+
 
 export default function InventoryStats({ products }) {
   const totalStock = products.reduce((acc, p) => acc + p.quantity, 0);

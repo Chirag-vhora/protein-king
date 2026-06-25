@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { useNavigate } from 'react-router-dom';
 
 export default function StorefrontPage({ products, loading, addToCart }) {
@@ -7,7 +7,7 @@ export default function StorefrontPage({ products, loading, addToCart }) {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative pt-12 pb-20 px-4 md:px-16 max-w-[1280px] mx-auto min-h-[819px] flex flex-col lg:flex-row items-center justify-between gap-12">
+      <section className="relative pt-12 pb-20 px-4 md:px-16 max-w-[1280px] mx-auto min-h-0 lg:min-h-[819px] flex flex-col lg:flex-row items-center justify-between gap-12">
         <div className="flex-1 space-y-8 z-10 text-center lg:text-left">
           <div className="space-y-2">
             <span className="font-display text-xs font-semibold tracking-widest text-outline uppercase">Next-Gen Bioavailability</span>
@@ -45,8 +45,8 @@ export default function StorefrontPage({ products, loading, addToCart }) {
           <h2 className="font-display font-semibold text-2xl text-primary tracking-wide">CATEGORIES</h2>
           <div className="hairline-divider mt-4 w-24"></div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 h-auto md:h-[350px]">
-          <div className="glass-card md:col-span-2 group relative overflow-hidden flex items-end p-8 min-h-[220px]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 h-auto">
+          <div className="glass-card sm:col-span-2 group relative overflow-hidden flex items-end p-8 min-h-[220px]">
             <div 
               className="absolute inset-0 bg-cover bg-center grayscale transition-transform duration-700 group-hover:scale-105 opacity-60"
               style={{ backgroundImage: `url('https://lh3.googleusercontent.com/aida-public/AB6AXuB2iA6uSwcXcSrcJayZGERunwmp4J8llw4lz43y6kqSrg94muh5ftFeOQ2VG9TE4z0BDQ3O7jgqX6jvYtV9f3itfxivW9OsjAXBkPkLaWbevGS5BQS2i8TVuOChhuzqnaPd_PovngsOejKjs4N-WpuPNOQGF-7JJmkUIajx_7IgF_k9drcuINOA1hUUqL2Pyt-Wy6JcLkWE4ea1GaibYIQslU5Sz176bZiZIwwalWct0KY8HgdfRh1rPuK73z5NkLWa1BhG2HSwVw')` }}
@@ -156,7 +156,7 @@ export default function StorefrontPage({ products, loading, addToCart }) {
       <section id="science" className="py-20 relative overflow-hidden bg-black/20">
         <div className="max-w-[1280px] mx-auto px-4 md:px-16 grid md:grid-cols-2 gap-16 items-center">
           <div className="order-2 md:order-1">
-            <div className="glass-card p-12 relative overflow-hidden">
+            <div className="glass-card p-6 md:p-12 relative overflow-hidden">
               <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/5 rounded-full blur-[60px]"></div>
               <h2 className="font-display font-bold text-3xl text-primary mb-6">MICRONIZED FOR INSTANT UPTAKE</h2>
               <p className="font-sans text-base text-on-secondary-container leading-relaxed mb-8">

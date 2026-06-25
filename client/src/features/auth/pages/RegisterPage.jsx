@@ -44,7 +44,7 @@ export default function RegisterPage({ loginUser }) {
   };
 
   return (
-    <div className="max-w-[400px] mx-auto my-20 p-8 glass-card rounded-xl relative overflow-hidden">
+    <div className="max-w-[400px] mx-auto my-10 md:my-20 p-6 md:p-8 glass-card rounded-xl relative overflow-hidden">
       <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/5 rounded-full blur-[80px]"></div>
       
       <div className="relative z-10">

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 export default function AdminLoginPage({ onLoginSuccess }) {
   const [username, setUsername] = useState('');
@@ -17,7 +17,7 @@ export default function AdminLoginPage({ onLoginSuccess }) {
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-surface-dim relative font-sans text-on-surface">
       <div className="mesh-gradient"></div>
-      <div className="max-w-[400px] w-full mx-4 p-8 glass-modal rounded-xl relative overflow-hidden">
+      <div className="max-w-[400px] w-full mx-4 p-6 sm:p-8 glass-modal rounded-xl relative overflow-hidden">
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/5 rounded-full blur-[80px]"></div>
         <div className="relative z-10">
           <div className="mb-8 text-center">
