@@ -9,6 +9,15 @@ import SuccessPage from '../features/checkout/pages/SuccessPage.jsx';
 import LoginPage from '../features/auth/pages/LoginPage.jsx';
 import RegisterPage from '../features/auth/pages/RegisterPage.jsx';
 import AdminDashboard from '../features/admin/pages/AdminDashboard.jsx';
+import {
+  AboutPage,
+  ContactPage,
+  FaqPage,
+  PrivacyPolicyPage,
+  RefundPolicyPage,
+  ShippingPolicyPage,
+  TermsPage,
+} from '../features/info/pages/index.js';
 import { getProducts, getCurrentUser } from '../services/api.js';
 
 function AppContent() {
@@ -124,6 +133,17 @@ function AppContent() {
           <Route path="/login" element={<LoginPage loginUser={loginUser} />} />
           <Route path="/register" element={<RegisterPage loginUser={loginUser} />} />
           <Route path="/success" element={<SuccessPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path="/terms-and-conditions" element={<TermsPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
+          <Route path="/shipping" element={<ShippingPolicyPage />} />
+          <Route path="/replacement-refund-policy" element={<RefundPolicyPage />} />
+          <Route path="/refund-policy" element={<RefundPolicyPage />} />
+          <Route path="/faq" element={<FaqPage />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </div>

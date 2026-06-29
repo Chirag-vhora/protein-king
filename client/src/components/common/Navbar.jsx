@@ -8,7 +8,7 @@ export default function Navbar({ cartCount, user, logoutUser }) {
       <div className="flex justify-between items-center px-4 md:px-16 py-4 max-w-[1280px] mx-auto h-20">
         <div className="flex items-center gap-8">
           <Link to="/" className="font-display font-extrabold text-xl md:text-2xl tracking-tighter text-primary">
-            AURA PERFORMANCE
+            KING PROTINE
           </Link>
           <div className="hidden md:flex gap-8">
             <Link to="/" className="font-display font-semibold text-xs tracking-wider text-primary border-b-2 border-primary pb-1">
@@ -51,9 +51,9 @@ export default function Navbar({ cartCount, user, logoutUser }) {
             </Link>
           )}
 
-          <Link to="/admin" className="p-2 hover:bg-white/5 transition-all rounded-full active:scale-95 duration-200 flex items-center">
+          {/* <Link to="/admin" className="p-2 hover:bg-white/5 transition-all rounded-full active:scale-95 duration-200 flex items-center">
             <span className="material-symbols-outlined text-primary text-2xl">admin_panel_settings</span>
-          </Link>
+          </Link> */}
 
           <button 
             onClick={() => setMenuOpen(!menuOpen)}

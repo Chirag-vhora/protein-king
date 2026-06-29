@@ -1,5 +1,6 @@
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
+import { sendAdminOrderNotification } from '../utils/email.js';
 
 export const getAllOrders = async () => {
   return await Order.find({})
@@ -47,7 +48,16 @@ export const createOrder = async (orderData) => {
     orderStatus: orderData.orderStatus || 'Pending'
   });
 
-  return await order.save();
+  const savedOrder = await order.save();
+
+  try {
+    await savedOrder.populate('items.product');
+    await sendAdminOrderNotification(savedOrder);
+  } catch (emailError) {
+    console.error('[Order Service] Email notification failed, but order was saved successfully:', emailError);
+  }
+
+  return savedOrder;
 };
 
 export const updateOrderStatus = async (id, orderStatus) => {
