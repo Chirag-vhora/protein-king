@@ -1,11 +1,14 @@
 
 import { useNavigate } from 'react-router-dom';
+import ScrollIntro from '../../../components/home/ScrollIntro.jsx';
 
 export default function StorefrontPage({ products, loading, addToCart }) {
   const navigate = useNavigate();
 
   return (
     <div>
+      <ScrollIntro />
+
       {/* Hero Section */}
       <section className="relative pt-12 pb-20 px-4 md:px-16 max-w-[1280px] mx-auto min-h-0 lg:min-h-[819px] flex flex-col lg:flex-row items-center justify-between gap-12">
         <div className="flex-1 space-y-8 z-10 text-center lg:text-left">

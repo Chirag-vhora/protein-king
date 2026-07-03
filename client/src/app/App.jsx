@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from '../components/common/Navbar.jsx';
 import Footer from '../components/common/Footer.jsx';
+import SmoothScroll from '../components/common/SmoothScroll.jsx';
 import StorefrontPage from '../features/home/pages/StorefrontPage.jsx';
 import ProductDetailsPage from '../features/products/pages/ProductDetailsPage.jsx';
 import CartPage from '../features/cart/pages/CartPage.jsx';
@@ -116,6 +117,8 @@ function AppContent() {
 
   return (
     <div className="min-h-screen relative font-sans bg-surface-dim text-on-surface">
+      <SmoothScroll />
+
       {/* Background Mesh */}
       <div className="mesh-gradient"></div>
 

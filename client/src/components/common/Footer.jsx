@@ -17,7 +17,7 @@ const policyLinks = [
 
 const trustBadges = [
   'Genuine Products',
-  'Order Confirmation by Phone',
+  'Order Confirme by Phone',
   'Local Delivery (Anand, Gujarat)',
 ];
 
