@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useLocation, useNavigationType } from 'react-router-dom';
 import Lenis from '@studio-freight/lenis';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -7,6 +8,8 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function SmoothScroll() {
   const lenisRef = useRef(null);
+  const { pathname } = useLocation();
+  const navigationType = useNavigationType();
 
   useEffect(() => {
     const lenis = new Lenis({
@@ -33,6 +36,16 @@ export default function SmoothScroll() {
       lenisRef.current = null;
     };
   }, []);
+
+  // Sync route changes with Lenis
+  useEffect(() => {
+    const lenis = lenisRef.current;
+    if (!lenis) return;
+
+    if (navigationType === 'PUSH' || navigationType === 'REPLACE') {
+      lenis.scrollTo(0, { immediate: true });
+    }
+  }, [pathname, navigationType]);
 
   return null;
 }

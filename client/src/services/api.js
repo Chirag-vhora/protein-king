@@ -1,5 +1,17 @@
 import { API_BASE } from '../constants/config.js';
 
+const getAdminHeaders = (contentType = 'application/json') => {
+  const token = localStorage.getItem('auraAdminToken');
+  const headers = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  if (contentType) {
+    headers['Content-Type'] = contentType;
+  }
+  return headers;
+};
+
 // --- PRODUCTS API SERVICES ---
 
 export const getProducts = async () => {
@@ -133,6 +145,23 @@ export const getCurrentUser = async (token) => {
   const data = await res.json();
   if (!res.ok) {
     throw new Error(data.message || 'Failed to fetch current user');
+  }
+  return data;
+};
+
+export const uploadProductImage = async (file) => {
+  const headers = getAdminHeaders(null);
+  const formData = new FormData();
+  formData.append('image', file);
+
+  const res = await fetch(`${API_BASE}/upload/image`, {
+    method: 'POST',
+    headers,
+    body: formData
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || 'Image upload failed');
   }
   return data;
 };

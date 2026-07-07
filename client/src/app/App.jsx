@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Navbar from '../components/common/Navbar.jsx';
 import Footer from '../components/common/Footer.jsx';
 import SmoothScroll from '../components/common/SmoothScroll.jsx';
+import ScrollToTop from '../components/common/ScrollToTop.jsx';
 import StorefrontPage from '../features/home/pages/StorefrontPage.jsx';
 import ProductDetailsPage from '../features/products/pages/ProductDetailsPage.jsx';
 import CartPage from '../features/cart/pages/CartPage.jsx';
@@ -36,6 +37,14 @@ function AppContent() {
 
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith('/admin');
+  const [introPlayed, setIntroPlayed] = useState(false);
+
+  useEffect(() => {
+    if (location.pathname !== '/') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setIntroPlayed(true);
+    }
+  }, [location.pathname]);
 
   const loginUser = (userData, token) => {
     localStorage.setItem('auraUser', JSON.stringify(userData));
@@ -130,7 +139,7 @@ function AppContent() {
       {/* Routes */}
       <div className={isAdminPath ? "" : "pt-20"}>
         <Routes>
-          <Route path="/" element={<StorefrontPage products={products} loading={loading} addToCart={addToCart} />} />
+          <Route path="/" element={<StorefrontPage products={products} loading={loading} addToCart={addToCart} introPlayed={introPlayed} />} />
           <Route path="/product/:id" element={<ProductDetailsPage products={products} addToCart={addToCart} />} />
           <Route path="/cart" element={<CartPage cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} clearCart={clearCart} user={user} />} />
           <Route path="/login" element={<LoginPage loginUser={loginUser} />} />
@@ -160,6 +169,7 @@ function AppContent() {
 export default function App() {
   return (
     <Router>
+      <ScrollToTop />
       <AppContent />
     </Router>
   );

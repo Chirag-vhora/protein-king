@@ -4,6 +4,8 @@ import User from '../models/User.js';
 const authMiddleware = async (req, res, next) => {
   const authorization = req.headers.authorization;
 
+  console.log("AUTH MIDDLEWARE FILE LOADED");
+
   if (!authorization?.startsWith('Bearer ')) {
     return res.status(401).json({ message: 'Not authorized, no token provided' });
   }

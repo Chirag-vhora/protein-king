@@ -6,15 +6,18 @@ import OrdersView from './OrdersView.jsx';
 import { getProducts, getOrders } from '../../../services/api.js';
 
 export default function AdminDashboard() {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('auraAdminToken') === 'kingpro-session-active');
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    const token = localStorage.getItem('auraAdminToken');
+    return !!token && token !== 'kingpro-session-active';
+  });
   const [activeTab, setActiveTab] = useState('inventory');
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const loginAdmin = () => {
-    localStorage.setItem('auraAdminToken', 'kingpro-session-active');
+  const loginAdmin = (token) => {
+    localStorage.setItem('auraAdminToken', token);
     setIsLoggedIn(true);
   };
 

@@ -21,14 +21,31 @@ export default function useFramePreloader() {
       img.src = `/frame/frame_${frameNumber}.webp`;
 
       img.onload = () => {
-        loadedCount++;
-
-        if (cancelled) return;
-
-        setLoaded(loadedCount);
-
-        if (loadedCount === TOTAL_FRAMES) {
-          setFrames(images);
+        if (typeof img.decode === "function") {
+          img.decode()
+            .then(() => {
+              if (cancelled) return;
+              loadedCount++;
+              setLoaded(loadedCount);
+              if (loadedCount === TOTAL_FRAMES) {
+                setFrames(images);
+              }
+            })
+            .catch(() => {
+              if (cancelled) return;
+              loadedCount++;
+              setLoaded(loadedCount);
+              if (loadedCount === TOTAL_FRAMES) {
+                setFrames(images);
+              }
+            });
+        } else {
+          if (cancelled) return;
+          loadedCount++;
+          setLoaded(loadedCount);
+          if (loadedCount === TOTAL_FRAMES) {
+            setFrames(images);
+          }
         }
       };
 

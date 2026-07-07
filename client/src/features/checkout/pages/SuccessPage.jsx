@@ -1,6 +1,10 @@
 import { Link } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
+import { hoverScale, tapScale, getSpringTransition } from '../../../constants/motionVariants.js';
 
 export default function SuccessPage() {
+  const shouldReduceMotion = useReducedMotion();
+
   return (
     <div className="text-center py-20 md:py-40 max-w-[1280px] mx-auto px-4">
       <div className="flex justify-center mb-6">
@@ -10,8 +14,15 @@ export default function SuccessPage() {
       <p className="font-sans text-on-secondary-container max-w-md mx-auto mb-8 leading-relaxed">
         Your performance ledger has been updated. The order is registered and will dispatch via priority logistics routing.
       </p>
-      <Link to="/" className="btn-primary px-8 py-4 font-display font-bold text-xs uppercase tracking-widest inline-block">
-        Return to Storefront
+      <Link to="/" className="inline-block">
+        <motion.span
+          className="btn-primary px-8 py-4 font-display font-bold text-xs uppercase tracking-widest inline-block rounded-sm"
+          whileHover={hoverScale(shouldReduceMotion, 1.015)}
+          whileTap={tapScale(shouldReduceMotion, 0.985)}
+          transition={getSpringTransition()}
+        >
+          Return to Storefront
+        </motion.span>
       </Link>
     </div>
   );

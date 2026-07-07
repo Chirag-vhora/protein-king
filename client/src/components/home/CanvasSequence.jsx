@@ -1,111 +1,82 @@
-import { useEffect, useRef } from "react";
+import {
+  forwardRef,
+  useCallback,
+  useImperativeHandle,
+  useRef,
+} from "react";
 
-export default function CanvasSequence({
-  frames,
-  currentFrame,
-}) {
+const CanvasSequence = forwardRef(function CanvasSequence(_, ref) {
   const canvasRef = useRef(null);
+  const contextRef = useRef(null);
+  const sizeRef = useRef({ width: 0, height: 0, dpr: 1 });
 
-  // Resize canvas
-  useEffect(() => {
+  const resize = useCallback(() => {
+    if (!canvasRef.current) return;
+
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const ctx =
+      contextRef.current || canvas.getContext("2d", { alpha: false });
 
-    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+    contextRef.current = ctx;
 
-      draw(currentFrame);
-    };
+    const dpr = window.devicePixelRatio || 1;
+    const width = window.innerWidth;
+    const height = window.innerHeight;
 
-    window.addEventListener("resize", resize);
+    sizeRef.current = { width, height, dpr };
 
-    resize();
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
 
-    return () => {
-      window.removeEventListener("resize", resize);
-    };
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
 
-    function draw(frameIndex) {
-      const image = frames[frameIndex];
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }, []);
 
-      if (!image) return;
+  const draw = useCallback((image) => {
+    if (!canvasRef.current || !image) return;
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const imageRatio = image.width / image.height;
-      const canvasRatio = canvas.width / canvas.height;
-
-      let drawWidth;
-      let drawHeight;
-      let x;
-      let y;
-
-      if (imageRatio > canvasRatio) {
-        drawHeight = canvas.height;
-        drawWidth = drawHeight * imageRatio;
-        x = (canvas.width - drawWidth) / 2;
-        y = 0;
-      } else {
-        drawWidth = canvas.width;
-        drawHeight = drawWidth / imageRatio;
-        x = 0;
-        y = (canvas.height - drawHeight) / 2;
-      }
-
-      ctx.drawImage(
-        image,
-        x,
-        y,
-        drawWidth,
-        drawHeight
-      );
-    }
-  }, [frames]);
-
-  // Draw current frame
-  useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const ctx =
+      contextRef.current || canvas.getContext("2d", { alpha: false });
 
-    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
 
-    const image = frames[currentFrame];
+    contextRef.current = ctx;
 
-    if (!image) return;
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    const imageRatio = image.width / image.height;
-    const canvasRatio = canvas.width / canvas.height;
-
-    let drawWidth;
-    let drawHeight;
-    let x;
-    let y;
-
-    if (imageRatio > canvasRatio) {
-      drawHeight = canvas.height;
-      drawWidth = drawHeight * imageRatio;
-      x = (canvas.width - drawWidth) / 2;
-      y = 0;
-    } else {
-      drawWidth = canvas.width;
-      drawHeight = drawWidth / imageRatio;
-      x = 0;
-      y = (canvas.height - drawHeight) / 2;
+    if (sizeRef.current.width === 0) {
+      resize();
     }
 
-    ctx.drawImage(
-      image,
-      x,
-      y,
-      drawWidth,
-      drawHeight
+    const { width, height } = sizeRef.current;
+
+    ctx.clearRect(0, 0, width, height);
+
+    const scale = Math.max(
+      width / image.width,
+      height / image.height
     );
-  }, [currentFrame, frames]);
+
+    const drawWidth = image.width * scale;
+    const drawHeight = image.height * scale;
+
+    const x = (width - drawWidth) / 2;
+    const y = (height - drawHeight) / 2;
+
+    ctx.drawImage(image, x, y, drawWidth, drawHeight);
+  }, [resize]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      draw,
+      resize,
+    }),
+    [draw, resize]
+  );
 
   return (
     <canvas
@@ -113,4 +84,6 @@ export default function CanvasSequence({
       className="fixed inset-0 w-full h-full"
     />
   );
-}
+});
+
+export default CanvasSequence;

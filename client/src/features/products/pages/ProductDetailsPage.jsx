@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
+import { hoverScale, tapScale, getSpringTransition } from '../../../constants/motionVariants.js';
 
 export default function ProductDetailsPage({ products, addToCart }) {
+  const shouldReduceMotion = useReducedMotion();
   const { id } = useParams();
   const navigate = useNavigate();
   const product = products.find(p => p._id === id);
@@ -30,17 +33,31 @@ export default function ProductDetailsPage({ products, addToCart }) {
   };
 
   return (
-    <main className="relative pt-12 pb-20 max-w-[1280px] mx-auto px-4 md:px-16 min-h-screen">
+    <main className="relative pt-8 pb-20 max-w-[1280px] mx-auto px-4 md:px-16 min-h-screen">
+      {/* Back Link */}
+      <div className="mb-6">
+        <Link to="/">
+          <motion.div
+            className="inline-flex items-center gap-2 font-display text-[9px] font-bold tracking-[0.2em] text-white/50 hover:text-white uppercase select-none cursor-pointer"
+            whileHover={{ x: -4 }}
+            transition={getSpringTransition()}
+          >
+            <span className="material-symbols-outlined text-xs">arrow_back</span>
+            Back to Products
+          </motion.div>
+        </Link>
+      </div>
+
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-16">
         
-        {/* Left: Product Images */}
-        <div className="md:col-span-6 lg:col-span-7 flex flex-col gap-6">
+        {/* Left: Product Images (Sticky on Desktop) */}
+        <div className="md:col-span-6 lg:col-span-7 md:sticky md:top-28 self-start flex flex-col gap-6">
           <div className="glass-card rounded-xl overflow-hidden aspect-[4/5] flex items-center justify-center p-6 md:p-12 group">
-            <img 
-              className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105" 
-              src={product.imageUrl} 
-              alt={product.name}
-            />
+<img
+  className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+  src={product.images?.[0] || product.imageUrl}
+  alt={product.name}
+/>
           </div>
         </div>
 
@@ -78,15 +95,18 @@ export default function ProductDetailsPage({ products, addToCart }) {
               <label className="font-display font-semibold text-xs text-on-surface-variant uppercase tracking-widest">Select Flavor</label>
               <div className="flex flex-wrap gap-2 md:gap-4">
                 {product.flavors.map(flav => (
-                  <button 
+                  <motion.button 
                     key={flav}
                     onClick={() => setSelectedFlavor(flav)}
                     className={`flex-1 py-4 glass-card rounded-lg font-display text-xs uppercase tracking-wider transition-all ${
                       selectedFlavor === flav ? 'active-selection' : 'hover:bg-white/5'
                     }`}
+                    whileHover={hoverScale(shouldReduceMotion, 1.015)}
+                    whileTap={tapScale(shouldReduceMotion, 0.985)}
+                    transition={getSpringTransition()}
                   >
                     {flav}
-                  </button>
+                  </motion.button>
                 ))}
               </div>
             </div>
@@ -96,36 +116,62 @@ export default function ProductDetailsPage({ products, addToCart }) {
           <div className="space-y-4">
             <label className="font-display font-semibold text-xs text-on-surface-variant uppercase tracking-widest">Quantity</label>
             <div className="flex items-center gap-4 w-32 border border-white/10 rounded-sm">
-              <button 
+              <motion.button 
                 onClick={() => setQuantity(q => q > 1 ? q - 1 : 1)}
                 className="px-4 py-2 hover:bg-white/5 text-primary"
+                whileTap={tapScale(shouldReduceMotion, 0.92)}
+                transition={getSpringTransition()}
               >
                 -
-              </button>
-              <span className="font-display text-xs px-2 flex-grow text-center">{quantity.toString().padStart(2, '0')}</span>
-              <button 
+              </motion.button>
+              <span className="font-display text-xs px-2 flex-grow text-center select-none">{quantity.toString().padStart(2, '0')}</span>
+              <motion.button 
                 onClick={() => setQuantity(q => q + 1)}
                 className="px-4 py-2 hover:bg-white/5 text-primary"
+                whileTap={tapScale(shouldReduceMotion, 0.92)}
+                transition={getSpringTransition()}
               >
                 +
-              </button>
+              </motion.button>
             </div>
           </div>
 
           {/* CTA Actions */}
           <div className="flex flex-col gap-4 mt-4">
-            <button 
+            <motion.button 
               onClick={handleAddToCart}
               className="btn-primary w-full py-4 rounded-lg font-display font-bold text-xs uppercase tracking-widest"
+              whileHover={hoverScale(shouldReduceMotion, 1.015)}
+              whileTap={tapScale(shouldReduceMotion, 0.98)}
+              transition={getSpringTransition()}
             >
               Add to Cart
-            </button>
-            <button 
+            </motion.button>
+            <motion.button 
               onClick={handleBuyNow}
               className="btn-secondary w-full py-4 rounded-lg font-display font-bold text-xs uppercase tracking-widest"
+              whileHover={hoverScale(shouldReduceMotion, 1.015)}
+              whileTap={tapScale(shouldReduceMotion, 0.98)}
+              transition={getSpringTransition()}
             >
               Buy Now
-            </button>
+            </motion.button>
+
+            {/* Reassurance Section */}
+            <div className="flex items-center justify-between mt-2 px-1 text-on-surface-variant font-display text-[9px] font-bold tracking-widest uppercase select-none">
+              <div className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-xs text-white/30">local_shipping</span>
+                <span>Fast Shipping</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-xs text-white/30">lock</span>
+                <span>Secure Checkout</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-xs text-white/30">verified</span>
+                <span>Quality Assured</span>
+              </div>
+            </div>
           </div>
 
           {/* Nutrition Facts Panel */}

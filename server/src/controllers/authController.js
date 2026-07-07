@@ -63,7 +63,12 @@ export const login = async (req, res, next) => {
       return res.status(500).json({ message: 'JWT_SECRET is not configured' });
     }
 
-    const user = await authService.authenticateUser(email, password);
+    let targetEmail = email.trim();
+    if (targetEmail.toLowerCase() === 'kingpro') {
+      targetEmail = process.env.ADMIN_EMAIL || 'kingpro@aura.com';
+    }
+
+    const user = await authService.authenticateUser(targetEmail, password);
     const token = generateToken(user._id);
 
     return res.json({

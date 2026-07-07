@@ -1,16 +1,23 @@
 import { useState } from 'react';
+import { loginUser } from '../../../services/api.js';
 
 export default function AdminLoginPage({ onLoginSuccess }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (username === 'kingpro' && password === 'kingpro00') {
-      onLoginSuccess();
-    } else {
-      setError('ACCESS DENIED: INVALID LEDGER CREDENTIALS');
+    setError('');
+    try {
+      const data = await loginUser(username, password);
+      if (data.user?.role !== 'admin') {
+        setError('ACCESS DENIED: ACCOUNT DOES NOT HAVE ADMINISTRATIVE PRIVILEGES');
+        return;
+      }
+      onLoginSuccess(data.token);
+    } catch (err) {
+      setError(err.message || 'ACCESS DENIED: INVALID LEDGER CREDENTIALS');
     }
   };
 

@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { loginUser as loginUserApi } from '../../../services/api.js';
+import { hoverScale, tapScale, getSpringTransition } from '../../../constants/motionVariants.js';
 
 export default function LoginPage({ loginUser }) {
+  const shouldReduceMotion = useReducedMotion();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -77,20 +80,30 @@ export default function LoginPage({ loginUser }) {
             />
           </div>
 
-          <button 
+          <motion.button 
             type="submit" 
             disabled={loading}
-            className="w-full bg-primary text-black py-4 font-display font-bold text-xs tracking-widest transition-all hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-primary text-black py-4 font-display font-bold text-xs tracking-widest disabled:opacity-50 disabled:cursor-not-allowed"
+            whileHover={hoverScale(shouldReduceMotion, 1.015)}
+            whileTap={tapScale(shouldReduceMotion, 0.985)}
+            transition={getSpringTransition()}
           >
             {loading ? 'VERIFYING...' : 'VERIFY CREDENTIALS'}
-          </button>
+          </motion.button>
         </form>
 
         <div className="mt-6 text-center">
-          <p className="text-[10px] text-outline">
-            DON'T HAVE AN ACCOUNT?{' '}
-            <Link to="/register" className="text-white hover:underline ml-1 font-bold">
-              SIGN UP
+          <p className="text-[10px] text-outline uppercase select-none">
+            Don't have an account?{' '}
+            <Link to="/register" className="text-white hover:underline ml-1 font-bold inline-block">
+              <motion.span
+                className="inline-block"
+                whileHover={hoverScale(shouldReduceMotion, 1.03)}
+                whileTap={tapScale(shouldReduceMotion, 0.97)}
+                transition={getSpringTransition()}
+              >
+                Sign Up
+              </motion.span>
             </Link>
           </p>
         </div>

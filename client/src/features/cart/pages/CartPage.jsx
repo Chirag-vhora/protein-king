@@ -1,8 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion, useReducedMotion } from 'framer-motion';
 import { createOrder } from '../../../services/api.js';
+import { hoverScale, tapScale, getSpringTransition } from '../../../constants/motionVariants.js';
 
 export default function CartPage({ cart, updateQuantity, removeFromCart, clearCart, user }) {
+  const shouldReduceMotion = useReducedMotion();
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -72,8 +75,15 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
       <div className="text-center py-40 max-w-[1280px] mx-auto px-4">
         <h1 className="font-display font-extrabold text-3xl mb-4 text-primary">YOUR CART IS EMPTY</h1>
         <p className="font-sans text-on-secondary-container mb-8">SECURE ENCRYPTED CHECKOUT REQUIRES ACTIVE ITEMS</p>
-        <Link to="/" className="btn-primary px-8 py-4 font-display font-bold text-xs uppercase tracking-widest inline-block">
-          Return to Storefront
+        <Link to="/" className="inline-block">
+          <motion.span
+            className="btn-primary px-8 py-4 font-display font-bold text-xs uppercase tracking-widest inline-block rounded-sm"
+            whileHover={hoverScale(shouldReduceMotion, 1.015)}
+            whileTap={tapScale(shouldReduceMotion, 0.985)}
+            transition={getSpringTransition()}
+          >
+            Return to Storefront
+          </motion.span>
         </Link>
       </div>
     );
@@ -95,8 +105,12 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
           <div className="space-y-4">
             {cart.map((item, idx) => (
               <div key={`${item.product._id}-${item.flavor}-${idx}`} className="glass-card p-6 flex flex-col sm:flex-row gap-6 items-center">
-                <div className="w-24 h-24 bg-surface-container-highest overflow-hidden rounded flex-shrink-0 flex items-center justify-center p-2">
-                  <img className="max-w-full max-h-full object-contain grayscale" src={item.product.images?.[0]} alt={item.product.name} />
+                <div className="w-24 h-24 bg-surface-container-highest overflow-hidden rounded flex-shrink-0 flex items-center justify-center p-2 select-none">
+                  <img 
+                    className="max-w-full max-h-full object-contain" 
+                    src={item.product.imageUrl || item.product.images?.[0]} 
+                    alt={item.product.name} 
+                  />
                 </div>
                 
                 <div className="flex-1 w-full">
@@ -105,31 +119,38 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
                       <h3 className="font-display font-bold text-base text-primary tracking-wide">{item.product.name}</h3>
                       <p className="font-display text-[10px] text-outline mt-1 uppercase tracking-wider">FLAVOR: {item.flavor}</p>
                     </div>
-                    <button 
+                    <motion.button 
                       onClick={() => removeFromCart(item.product._id, item.flavor)}
-                      className="text-on-surface-variant hover:text-red-400 transition-colors"
+                      className="text-on-surface-variant hover:text-red-400 transition-colors flex items-center justify-center p-1 hover:bg-white/5 rounded-full"
+                      whileHover={hoverScale(shouldReduceMotion, 1.1)}
+                      whileTap={tapScale(shouldReduceMotion, 0.9)}
+                      transition={getSpringTransition()}
                     >
-                      <span className="material-symbols-outlined">close</span>
-                    </button>
+                      <span className="material-symbols-outlined text-base">close</span>
+                    </motion.button>
                   </div>
                   
                   <div className="flex justify-between items-end mt-4">
                     <div className="flex items-center gap-1 border border-white/10 rounded-sm">
-                      <button 
+                      <motion.button 
                         onClick={() => updateQuantity(item.product._id, item.flavor, -1)}
                         className="px-3 py-1 hover:bg-white/5 text-primary font-bold text-xs"
+                        whileTap={tapScale(shouldReduceMotion, 0.9)}
+                        transition={getSpringTransition()}
                       >
                         -
-                      </button>
-                      <span className="font-display text-xs px-2">{item.quantity.toString().padStart(2, '0')}</span>
-                      <button 
+                      </motion.button>
+                      <span className="font-display text-xs px-2 select-none">{item.quantity.toString().padStart(2, '0')}</span>
+                      <motion.button 
                         onClick={() => updateQuantity(item.product._id, item.flavor, 1)}
                         className="px-3 py-1 hover:bg-white/5 text-primary font-bold text-xs"
+                        whileTap={tapScale(shouldReduceMotion, 0.9)}
+                        transition={getSpringTransition()}
                       >
                         +
-                      </button>
+                      </motion.button>
                     </div>
-                    <span className="font-display font-bold text-base text-primary">${(item.product.price * item.quantity).toFixed(2)}</span>
+                    <span className="font-display font-bold text-base text-primary select-none">${(item.product.price * item.quantity).toFixed(2)}</span>
                   </div>
                 </div>
               </div>
@@ -244,14 +265,17 @@ export default function CartPage({ cart, updateQuantity, removeFromCart, clearCa
             )}
 
             <div className="pt-2">
-              <button 
+              <motion.button 
                 onClick={handleCheckoutSubmit}
                 disabled={submitting}
-                className="w-full bg-primary text-black py-4 font-display font-bold text-xs tracking-widest transition-all hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] active:scale-[0.98]"
+                className="w-full bg-primary text-black py-4 font-display font-bold text-xs tracking-widest disabled:opacity-50"
+                whileHover={hoverScale(shouldReduceMotion, 1.015)}
+                whileTap={tapScale(shouldReduceMotion, 0.985)}
+                transition={getSpringTransition()}
               >
                 {submitting ? 'SUBMITTING REQUEST...' : 'PLACE ORDER REQUEST'}
-              </button>
-              <p className="font-display text-[9px] text-outline text-center mt-4">YOUR ORDER WILL REMAIN PENDING UNTIL PERSONALLY CONFIRMED.</p>
+              </motion.button>
+              <p className="font-display text-[9px] text-outline text-center mt-4 select-none">YOUR ORDER WILL REMAIN PENDING UNTIL PERSONALLY CONFIRMED.</p>
             </div>
 
             <div className="flex items-center justify-center gap-2 opacity-50">
