@@ -56,6 +56,7 @@ function AppContent() {
   const logoutUser = () => {
     localStorage.removeItem('auraUser');
     localStorage.removeItem('auraToken');
+    localStorage.removeItem('auraAdminToken');
     setUser(null);
   };
 

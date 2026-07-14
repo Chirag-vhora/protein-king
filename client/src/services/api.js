@@ -35,7 +35,7 @@ export const getProductById = async (id) => {
 export const createProduct = async (payload) => {
   const res = await fetch(`${API_BASE}/products`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getAdminHeaders(),
     body: JSON.stringify(payload)
   });
   const data = await res.json();
@@ -48,7 +48,7 @@ export const createProduct = async (payload) => {
 export const updateProduct = async (id, payload) => {
   const res = await fetch(`${API_BASE}/products/${id}`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getAdminHeaders(),
     body: JSON.stringify(payload)
   });
   const data = await res.json();
@@ -60,7 +60,8 @@ export const updateProduct = async (id, payload) => {
 
 export const deleteProduct = async (id) => {
   const res = await fetch(`${API_BASE}/products/${id}`, {
-    method: 'DELETE'
+    method: 'DELETE',
+    headers: getAdminHeaders(null)
   });
   const data = await res.json();
   if (!res.ok) {
@@ -72,7 +73,9 @@ export const deleteProduct = async (id) => {
 // --- ORDERS API SERVICES ---
 
 export const getOrders = async () => {
-  const res = await fetch(`${API_BASE}/orders`);
+  const res = await fetch(`${API_BASE}/orders`, {
+    headers: getAdminHeaders(null)
+  });
   if (!res.ok) {
     const err = await res.json();
     throw new Error(err.message || 'Failed to fetch orders');
@@ -96,7 +99,7 @@ export const createOrder = async (payload) => {
 export const updateOrderStatus = async (id, status) => {
   const res = await fetch(`${API_BASE}/orders/${id}/status`, {
     method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
+    headers: getAdminHeaders(),
     body: JSON.stringify({ orderStatus: status })
   });
   const data = await res.json();
