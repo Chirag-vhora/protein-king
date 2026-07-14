@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { hoverScale, tapScale, hoverOpacity, getSpringTransition } from '../../constants/motionVariants.js';
 
 export default function Navbar({ cartCount, user, logoutUser }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const shouldReduceMotion = useReducedMotion();
+  const location = useLocation();
 
   return (
     <nav className="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-white/10">
@@ -22,9 +23,11 @@ export default function Navbar({ cartCount, user, logoutUser }) {
             </motion.div>
           </Link>
           <div className="hidden md:flex gap-8">
-            <Link to="/">
+            <Link to="/products">
               <motion.div
-                className="font-display font-semibold text-xs tracking-wider text-primary border-b-2 border-primary pb-1"
+                className={location.pathname === '/products' 
+                  ? "font-display font-semibold text-xs tracking-wider text-primary border-b-2 border-primary pb-1"
+                  : "font-display font-semibold text-xs tracking-wider text-on-surface-variant hover:text-primary transition-colors"}
                 whileHover={hoverScale(shouldReduceMotion, 1.04)}
                 whileTap={tapScale(shouldReduceMotion, 0.96)}
                 transition={getSpringTransition()}
@@ -32,7 +35,7 @@ export default function Navbar({ cartCount, user, logoutUser }) {
                 SHOP
               </motion.div>
             </Link>
-            <a href="#discover">
+            <a href={location.pathname === '/' ? '#discover' : '/#discover'}>
               <motion.div
                 className="font-display font-semibold text-xs tracking-wider text-on-surface-variant hover:text-primary transition-colors"
                 whileHover={hoverScale(shouldReduceMotion, 1.04)}
@@ -42,7 +45,7 @@ export default function Navbar({ cartCount, user, logoutUser }) {
                 DISCOVER
               </motion.div>
             </a>
-            <a href="#science">
+            <a href={location.pathname === '/' ? '#science' : '/#science'}>
               <motion.div
                 className="font-display font-semibold text-xs tracking-wider text-on-surface-variant hover:text-primary transition-colors"
                 whileHover={hoverScale(shouldReduceMotion, 1.04)}
@@ -122,16 +125,18 @@ export default function Navbar({ cartCount, user, logoutUser }) {
       {menuOpen && (
         <div className="md:hidden border-t border-white/5 bg-surface/95 backdrop-blur-2xl transition-all duration-300">
           <div className="flex flex-col px-6 py-4 space-y-4">
-            <Link to="/" onClick={() => setMenuOpen(false)}>
+            <Link to="/products" onClick={() => setMenuOpen(false)}>
               <motion.div
-                className="font-display font-semibold text-xs tracking-wider text-primary py-2 border-b border-white/5"
+                className={location.pathname === '/products'
+                  ? "font-display font-semibold text-xs tracking-wider text-primary py-2 border-b border-white/5"
+                  : "font-display font-semibold text-xs tracking-wider text-on-surface-variant hover:text-primary py-2 border-b border-white/5 transition-colors"}
                 whileTap={tapScale(shouldReduceMotion, 0.98)}
                 transition={getSpringTransition()}
               >
                 SHOP
               </motion.div>
             </Link>
-            <a href="#discover" onClick={() => setMenuOpen(false)}>
+            <a href={location.pathname === '/' ? '#discover' : '/#discover'} onClick={() => setMenuOpen(false)}>
               <motion.div
                 className="font-display font-semibold text-xs tracking-wider text-on-surface-variant hover:text-primary py-2 border-b border-white/5 transition-colors"
                 whileTap={tapScale(shouldReduceMotion, 0.98)}
@@ -140,7 +145,7 @@ export default function Navbar({ cartCount, user, logoutUser }) {
                 DISCOVER
               </motion.div>
             </a>
-            <a href="#science" onClick={() => setMenuOpen(false)}>
+            <a href={location.pathname === '/' ? '#science' : '/#science'} onClick={() => setMenuOpen(false)}>
               <motion.div
                 className="font-display font-semibold text-xs tracking-wider text-on-surface-variant hover:text-primary py-2 transition-colors"
                 whileTap={tapScale(shouldReduceMotion, 0.98)}

@@ -6,6 +6,7 @@ import SmoothScroll from '../components/common/SmoothScroll.jsx';
 import ScrollToTop from '../components/common/ScrollToTop.jsx';
 import StorefrontPage from '../features/home/pages/StorefrontPage.jsx';
 import ProductDetailsPage from '../features/products/pages/ProductDetailsPage.jsx';
+import ProductsCatalogPage from '../features/products/pages/ProductsCatalogPage.jsx';
 import CartPage from '../features/cart/pages/CartPage.jsx';
 import SuccessPage from '../features/checkout/pages/SuccessPage.jsx';
 import LoginPage from '../features/auth/pages/LoginPage.jsx';
@@ -140,6 +141,7 @@ function AppContent() {
       <div className={isAdminPath ? "" : "pt-20"}>
         <Routes>
           <Route path="/" element={<StorefrontPage products={products} loading={loading} addToCart={addToCart} introPlayed={introPlayed} />} />
+          <Route path="/products" element={<ProductsCatalogPage products={products} loading={loading} addToCart={addToCart} />} />
           <Route path="/product/:id" element={<ProductDetailsPage products={products} addToCart={addToCart} />} />
           <Route path="/cart" element={<CartPage cart={cart} updateQuantity={updateQuantity} removeFromCart={removeFromCart} clearCart={clearCart} user={user} />} />
           <Route path="/login" element={<LoginPage loginUser={loginUser} />} />

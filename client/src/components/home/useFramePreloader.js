@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const TOTAL_FRAMES = 192;
+const TOTAL_FRAMES = 185;
 
 export default function useFramePreloader() {
   const [frames, setFrames] = useState([]);

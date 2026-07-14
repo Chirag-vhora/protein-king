@@ -237,14 +237,15 @@ export default function StorefrontPage({ products, loading, addToCart, introPlay
           {loading ? (
             <div className="text-center py-20 text-on-surface-variant">LOADING PERFORMANCE UTILITIES...</div>
           ) : (
-            <motion.div
+            <>
+              <motion.div
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.12 }}
               variants={getStaggerContainerVariants(0.08)}
             >
-              {products.map(prod => (
+              {products.slice(0, 12).map(prod => (
                 <motion.div
                   key={prod._id}
                   className="glass-card p-6 flex flex-col justify-between gap-6"
@@ -255,12 +256,21 @@ export default function StorefrontPage({ products, loading, addToCart, introPlay
                     className="aspect-square relative flex items-center justify-center bg-white/5 rounded-lg overflow-hidden group cursor-pointer"
                   >
                     <img 
-                      className="w-4/5 h-4/5 object-contain brightness-110 transition-transform duration-500 group-hover:scale-110" 
+                      className={`w-4/5 h-4/5 object-contain brightness-110 transition-all duration-500 group-hover:scale-110 ${
+                        prod.images && prod.images.length > 1 ? 'group-hover:opacity-0' : ''
+                      }`} 
                       src={prod.images?.[0] || prod.imageUrl} 
                       alt={prod.name}
                     />
+                    {prod.images && prod.images.length > 1 && (
+                      <img 
+                        className="absolute w-4/5 h-4/5 object-contain brightness-110 opacity-0 group-hover:opacity-100 scale-95 group-hover:scale-110 transition-all duration-500 pointer-events-none" 
+                        src={prod.images[1]} 
+                        alt={`${prod.name} hover`}
+                      />
+                    )}
                     {prod.tags && prod.tags[0] && (
-                      <div className="absolute top-4 left-4">
+                      <div className="absolute top-4 left-4 z-10">
                         <span className="px-2 py-1 text-[9px] font-bold tracking-widest text-primary border border-white/40 rounded-sm uppercase">
                           {prod.tags[0]}
                         </span>
@@ -309,6 +319,19 @@ export default function StorefrontPage({ products, loading, addToCart, introPlay
                 </motion.div>
               ))}
             </motion.div>
+            <div className="flex justify-center mt-12">
+              <motion.button
+                onClick={() => navigate('/products')}
+                className="px-10 py-4 border border-white/20 hover:border-white bg-white/5 hover:bg-white text-white hover:text-black font-display font-bold text-[10px] uppercase tracking-[0.2em] transition-all rounded-sm flex items-center justify-center gap-2"
+                whileHover={hoverScale(shouldReduceMotion, 1.02)}
+                whileTap={tapScale(shouldReduceMotion, 0.98)}
+                transition={getSpringTransition()}
+              >
+                See More Products
+                <span className="material-symbols-outlined text-[12px]">arrow_forward</span>
+              </motion.button>
+            </div>
+          </>
           )}
         </section>
 

@@ -128,12 +128,12 @@ export default function ProductModal({ isOpen, onClose, onSubmit, editingProduct
               <div className="space-y-1">
                 <label className="text-[9px] font-bold text-white/50 uppercase tracking-widest">System SKU</label>
                 <input 
-                  className="w-full bg-transparent border-none border-b border-white/20 focus:border-white focus:ring-0 text-white py-2 transition-all outline-none text-sm"
-                  placeholder="AURA-X-000" 
+                  className="w-full bg-transparent border-none border-b border-white/20 text-white/50 py-2 outline-none text-sm cursor-not-allowed"
+                  placeholder="Auto-generated" 
                   type="text"
                   name="sku"
-                  value={formData.sku}
-                  onChange={handleInputChange}
+                  value={editingProduct ? formData.sku : ''}
+                  disabled
                 />
               </div>
               <div className="space-y-1">

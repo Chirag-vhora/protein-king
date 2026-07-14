@@ -15,5 +15,37 @@ const productSchema = new mongoose.Schema({
   flavors: [{ type: String }],
 }, { timestamps: true });
 
+productSchema.pre('save', async function(next) {
+  if (!this.sku || !this.sku.trim()) {
+    const prefix = 'AURA';
+    const char = (this.name && typeof this.name === 'string')
+      ? this.name.trim().charAt(0).toUpperCase().replace(/[^A-Z]/g, 'X')
+      : 'X';
+    
+    let sku;
+    let isUnique = false;
+    let attempts = 0;
+    const ProductModel = this.constructor;
+    
+    while (!isUnique && attempts < 10) {
+      const num = Math.floor(100 + Math.random() * 900);
+      sku = `${prefix}-${char}-${num}`;
+      
+      const existing = await ProductModel.findOne({ sku });
+      if (!existing) {
+        isUnique = true;
+      }
+      attempts++;
+    }
+    
+    if (!isUnique) {
+      sku = `${prefix}-${char}-${Date.now().toString().slice(-4)}`;
+    }
+    
+    this.sku = sku;
+  }
+  next();
+});
+
 export const Product = mongoose.model('Product', productSchema);
 export default Product;
